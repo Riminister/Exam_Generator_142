@@ -14,11 +14,15 @@ Successfully create a program that can generate PDF or Word type documents that 
 2. **Set up OpenAI API Key**
    - Configure API access for OpenAI services
 
-3. **Parse exam questions using OpenAI API**
+3. **Parse exam questions using OpenAI API** ✅
    - Use OpenAI API to parse through every question in the exams and extract them
+   - Extract images and convert them to text descriptions
+   - Extract equations and convert them to readable text
+   - Output structured JSON format
 
-4. **Create JSON database of questions**
+4. **Create JSON database of questions** ✅
    - Store all old exam questions in a structured JSON file
+   - See `parse_pdf_exams.py` for the parser implementation
 
 5. **Generate vector embeddings**
    - Use OpenAI API vector embedding to embed all the questions for semantic search
@@ -33,8 +37,12 @@ Successfully create a program that can generate PDF or Word type documents that 
 
 1. Install required dependencies:
    ```bash
-   pip install openai python-dotenv
+   py -m pip install -r requirements.txt
    ```
+   
+   **Optional - For OCR support:**
+   - Install Tesseract OCR: https://github.com/UB-Mannheim/tesseract/wiki
+   - Add Tesseract to your system PATH
 
 2. Create a `.env` file in the root directory with your OpenAI API key:
    ```
@@ -43,16 +51,26 @@ Successfully create a program that can generate PDF or Word type documents that 
 
 3. Test your API key:
    ```bash
-   python test_api_key.py
+   py test_api_key.py
    ```
+
+4. Parse PDF exams:
+   ```bash
+   py parse_pdf_exams.py
+   ```
+   See `USAGE.md` for detailed usage instructions.
 
 ## Project Structure
 ```
 Exam_Generator_142/
 ├── README.md
+├── USAGE.md
 ├── Game_Plan.txt
+├── requirements.txt
+├── parse_pdf_exams.py
 ├── .env
-└── test_api_key.py
+├── Past_Exams/          # PDF exam files
+└── Questions/           # Generated JSON files
 ```
 
 ## Notes

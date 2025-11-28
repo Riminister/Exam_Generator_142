@@ -1,0 +1,565 @@
+[
+  {
+    "exam_metadata": {
+      "university": "Queen's University",
+      "faculty": "Faculty of Engineering & Applied Science",
+      "course": "APSC 142 - Introduction to Computer Programming for Engineers",
+      "date": "April 20, 2013",
+      "time": "9:00am",
+      "duration": "3 hours",
+      "source_ids": ["cite: 1316", "cite: 1317", "cite: 1319"]
+    },
+    "questions": [
+      {
+        "question_number": "1",
+        "section": "Program Comprehension",
+        "marks": 12,
+        "text": "a) The code below was written to compute the average values of two x variables and two y variables. In the box beneath the code, show the screen output. Does the program compute the correct average values? b) Complete the function findMax. c) Show the screen output for the 2D array loop code.",
+        "content_description": "Includes code snippets. Part (a) involves integer division bugs in average calculation. Part (b) requires completing a 'findMax' function prototype. Part (c) involves a 2D array 'vals' and a summing loop.",
+        "source_ids": ["cite: 1346", "cite: 1347", "cite: 1361", "cite: 1375"]
+      },
+      {
+        "question_number": "2",
+        "section": "Computation and Output",
+        "marks": 14,
+        "text": "Write a program that calculates values of the polynomials y1 and y2 at x = 0, x = 0.25, ..., x = 5.0. Determine the largest absolute difference and smallest absolute difference between the two polynomials.",
+        "content_description": "The equations for y1 and y2 are heavily garbled in the source text (e.g., '8 = x20x2 + 75x-25'). The prompt requires calculating absolute differences in the range [0, 5].",
+        "source_ids": ["cite: 1403", "cite: 1404", "cite: 1405", "cite: 1406", "cite: 1407"]
+      },
+      {
+        "question_number": "3",
+        "section": "Robot Programming",
+        "marks": 16,
+        "text": "Navigate the robot from point A to point B in the maze shown below. Store the length of each segment traveled in an array and play a tone for a duration equal to the distance.",
+        "content_description": "Includes a diagram of a maze with start point A and end point B. Sensor ports are listed: Port 1 (Light), Port 2 (Sonar), Port 3 (Touch). Includes a 'Rotate' function provided in the code.",
+        "source_ids": ["cite: 1412", "cite: 1413", "cite: 1421", "cite: 1433"]
+      },
+      {
+        "question_number": "4",
+        "section": "1D Array",
+        "marks": 16,
+        "text": "Design a simple card game. Each player starts with a set of 52 cards. Players randomly select a card, compare values, and assign points (2 for higher, 1 for tie). Used cards are replaced with 0. Display the winner and score.",
+        "content_description": "Arrays 'k1' and 'Deck2' are provided initialized with values 1-13 repeated. The RobotC 'random()' function must be used.",
+        "source_ids": ["cite: 1482", "cite: 1483", "cite: 1489", "cite: 1496", "cite: 1506"]
+      },
+      {
+        "question_number": "5",
+        "section": "Computation and Numerical Methods",
+        "marks": 18,
+        "text": "An autonomous vehicle travels along a rail. Velocity is measured at 0.5s intervals. Calculate acceleration for each segment and store it. Determine final displacement using Riemann sum integration.",
+        "content_description": "Includes a table of Time vs Velocity data points and a graph showing the time-velocity curve. Code skeleton includes 'areaUnderCurve' function prototype.",
+        "source_ids": ["cite: 1514", "cite: 1518", "cite: 1520", "cite: 1533", "cite: 1537"]
+      },
+      {
+        "question_number": "6",
+        "section": "2D Array and Function",
+        "marks": 18,
+        "text": "Write a program that uses the Selection Sort algorithm to sort the rows of a 2D array (courseMarks) in ascending order according to the student number in the first column.",
+        "content_description": "Includes a visual table showing 'Before Sorting' and 'After Sorting' states of the array. The main program calls 'selectionSort' and 'swapRows'.",
+        "source_ids": ["cite: 1555", "cite: 1556", "cite: 1558", "cite: 1562", "cite: 1590"]
+      }
+    ]
+  },
+  {
+    "exam_metadata": {
+      "university": "Queen's University",
+      "faculty": "Faculty of Applied Science",
+      "course": "APSC 142 - Introduction to Computer Programming for Engineers",
+      "date": "19 April 2014",
+      "time": "9:00am",
+      "duration": "3 hours",
+      "source_ids": ["cite: 399", "cite: 400", "cite: 401", "cite: 403"]
+    },
+    "questions": [
+      {
+        "question_number": "1.A",
+        "section": "Program Comprehension",
+        "marks": 4,
+        "text": "Show the screen output that would be produced by the following program.",
+        "content_description": "Code snippet calculating floats result1 and result2 involving arithmetic operations on variables i, x, and y.",
+        "source_ids": ["cite: 421", "cite: 422"]
+      },
+      {
+        "question_number": "1.B",
+        "section": "Program Comprehension",
+        "marks": 4,
+        "text": "Show the screen output that would be produced by the following program.",
+        "content_description": "Code snippet involving loops and array indexing. The source text for the loop conditions is garbled (e.g., '(++:::9>::o=?)').",
+        "source_ids": ["cite: 439", "cite: 446", "cite: 447"]
+      },
+      {
+        "question_number": "1.C",
+        "section": "Program Comprehension",
+        "marks": 4,
+        "text": "Show the screen output that would be produced by the following program.",
+        "content_description": "Code snippet involving a function 'function' that takes references (int &val1, int &val2) and performs a swap logic.",
+        "source_ids": ["cite: 462", "cite: 476", "cite: 480"]
+      },
+      {
+        "question_number": "2",
+        "section": "Computation and Output",
+        "marks": 14,
+        "text": "Complete the program to calculate the minimum and maximum values of y for the polynomial. The program should display the min and max values of y and the corresponding x values.",
+        "content_description": "The polynomial equation in the text is garbled (Source 490). The range is x=0.0 to x=5.0 with delta 0.2.",
+        "source_ids": ["cite: 489", "cite: 490", "cite: 492", "cite: 494"]
+      },
+      {
+        "question_number": "3",
+        "section": "NXT Robot Operation",
+        "marks": 16,
+        "text": "Navigate the robot from point A towards point B (wall). Display distance. Reduce speed to 30% at 40cm. Stop and display image if touch sensors bump.",
+        "content_description": "Diagram shows robot at A and wall at B. Sensor ports listed: 1 (Sonar), 2 (Touch), 3 (Touch). Includes 'displayImage' function with a pixel array.",
+        "source_ids": ["cite: 512", "cite: 522", "cite: 524", "cite: 525", "cite: 573"]
+      },
+      {
+        "question_number": "4",
+        "section": "Function and 1D Arrays",
+        "marks": 16,
+        "text": "Complete the program to calculate average temperature, find the median temperature (handling odd/even N), and sort the array using selection or bubble sort.",
+        "content_description": "List of temperatures provided. Instructions include copying max_temps to sorted_temps, implementing 'sortArray', and handling median logic.",
+        "source_ids": ["cite: 633", "cite: 634", "cite: 637", "cite: 640"]
+      },
+      {
+        "question_number": "5",
+        "section": "2-D Arrays",
+        "marks": 16,
+        "text": "Write a function findPattern() that searches for a pattern in a picture and returns 1 if found. The picture is a 2D array of bytes.",
+        "content_description": "Includes visual examples of a 'star' picture array and pattern arrays. Code skeletons provided for 'findPattern'.",
+        "source_ids": ["cite: 700", "cite: 701", "cite: 727", "cite: 741"]
+      },
+      {
+        "question_number": "6",
+        "section": "Computation and Numerical Methods",
+        "marks": 16,
+        "text": "Find the time at which the rocket reaches maximum acceleration. Determine velocity at 10s intervals using Riemann sum integration.",
+        "content_description": "Equation provided: a(t) = sqrt(t) + 0.05t. Graph shows acceleration profile rising then dropping to zero at 15m/s^2.",
+        "source_ids": ["cite: 793", "cite: 794", "cite: 797", "cite: 806"]
+      }
+    ]
+  },
+  {
+    "exam_metadata": {
+      "university": "Queen's University",
+      "faculty": "Faculty of Engineering & Applied Science",
+      "course": "APSC 142 - Introduction to Computer Programming for Engineers",
+      "date": "April 16, 2015",
+      "time": "2:00 pm",
+      "duration": "3 HOURS",
+      "source_ids": ["cite: 3", "cite: 4", "cite: 5", "cite: 7"]
+    },
+    "questions": [
+      {
+        "question_number": "1.A",
+        "section": "Program Comprehension",
+        "marks": 2,
+        "text": "In the box below, show the screen output that would be produced by the following program.",
+        "content_description": "Code snippet with printf statements. Calculates 'x' using integer division and casting, and 'y' using modulus and division.",
+        "source_ids": ["cite: 24", "cite: 28", "cite: 29"]
+      },
+      {
+        "question_number": "1.B",
+        "section": "Program Comprehension",
+        "marks": 5,
+        "text": "In the box below, show the screen output that would be produced by the following program.",
+        "content_description": "Code snippet involving a function call with pass-by-reference parameters (int &x, int &y).",
+        "source_ids": ["cite: 35", "cite: 36", "cite: 43"]
+      },
+      {
+        "question_number": "1.C",
+        "section": "Program Comprehension",
+        "marks": 5,
+        "text": "In the box below, show the screen output that would be produced by the following program. You can use the chart provided below to trace your code.",
+        "content_description": "Code snippet manipulating an array 'a' in a loop. Includes a trace chart for variables.",
+        "source_ids": ["cite: 55", "cite: 56", "cite: 82", "cite: 94"]
+      },
+      {
+        "question_number": "2",
+        "section": "Computation and Output",
+        "marks": 12,
+        "text": "Write a program that uses the Riemann sum method to find the definite integral of f(x) = x^3 - 2x^2 - 3x + 8 from 0 to 3 using rectangles of width 0.2. Also find the minimum value of f(x).",
+        "content_description": "Includes a graph showing the function and Riemann sum rectangles. Requires outputting the minimum value and the calculated area.",
+        "source_ids": ["cite: 104", "cite: 105", "cite: 106", "cite: 108"]
+      },
+      {
+        "question_number": "3",
+        "section": "Robot Operation",
+        "marks": 20,
+        "text": "Write a program to navigate a path and react to coloured tiles and obstacles. Use CheckColour() and CheckDistance(). Drive straight, changing LED based on green/orange/red conditions.",
+        "content_description": "Table of sensors: S1 (Colour), S2 (Ultrasonic), S3/S4 (Touch). Logic includes driving 3600 ticks, changing LED on green/distance, and stopping if distance < 30cm.",
+        "source_ids": ["cite: 137", "cite: 138", "cite: 141", "cite: 150"]
+      },
+      {
+        "question_number": "4",
+        "section": "Functions and 1-D Arrays",
+        "marks": 10,
+        "text": "Write a function findPattern() which returns the number of times a DNA pattern appears in a DNA sequence.",
+        "content_description": "DNA represented as char array. Example provided with pattern matching. Function prototype given.",
+        "source_ids": ["cite: 175", "cite: 180", "cite: 185", "cite: 187"]
+      },
+      {
+        "question_number": "5",
+        "section": "2-D Arrays",
+        "marks": 15,
+        "text": "Write a program using three functions: flipHorizontal, flipVertical, and transposeArray to manipulate a 4x4 integer array.",
+        "content_description": "Visual representation of the original array and the three resulting transformed arrays.",
+        "source_ids": ["cite: 217", "cite: 218", "cite: 220", "cite: 222", "cite: 227"]
+      },
+      {
+        "question_number": "6",
+        "section": "Algorithms: Sorting and Searching",
+        "marks": 15,
+        "text": "Write a function to use selection or bubble sort to sort class_ids. Write a second function using binary search to search for specific IDs (445 and 530).",
+        "content_description": "Array of 9 student IDs provided. Must print whether students are in the class.",
+        "source_ids": ["cite: 281", "cite: 282", "cite: 284", "cite: 291"]
+      }
+    ]
+  },
+  {
+    "exam_metadata": {
+      "university": "Queen's University",
+      "faculty": "Faculty of Engineering & Applied Science",
+      "course": "APSC 142 - Introduction to Computer Programming for Engineers",
+      "date": "Dec 17, 2015",
+      "time": "9:00 am",
+      "duration": "3 HOURS",
+      "source_ids": ["cite: 1730", "cite: 1731", "cite: 1733", "cite: 1734"]
+    },
+    "questions": [
+      {
+        "question_number": "1.A",
+        "section": "Program Comprehension",
+        "marks": 4,
+        "text": "In the box below, show the screen output that would be produced by the following program.",
+        "content_description": "Code snippet manipulating float 'f' and int 'i' with casting and multiplication.",
+        "source_ids": ["cite: 1750", "cite: 1753", "cite: 1757"]
+      },
+      {
+        "question_number": "1.B",
+        "section": "Program Comprehension",
+        "marks": 4,
+        "text": "In the box below, show the screen output that would be produced by the following program.",
+        "content_description": "Code snippet with a do-while loop updating integers i and j.",
+        "source_ids": ["cite: 1763", "cite: 1769", "cite: 1773"]
+      },
+      {
+        "question_number": "1.C",
+        "section": "Program Comprehension",
+        "marks": 4,
+        "text": "The function below is supposed to arrange the two passed-in integer variables, swapping them if necessary so that upon return, val1 is not greater than val2. Write the lines of C code.",
+        "content_description": "Skeleton for 'swap' function provided.",
+        "source_ids": ["cite: 1777", "cite: 1779", "cite: 1780"]
+      },
+      {
+        "question_number": "2",
+        "section": "Computation and Output",
+        "marks": 12,
+        "text": "Write a program that calculates values of the polynomial 2x^3 - 100x^2 + 200x - 35 at x=0, 0.1, ..., 3.0. Display the maximum value.",
+        "content_description": "Equation provided: 2x^3 - 100x^2 + 200x - 35. Range [0, 3].",
+        "source_ids": ["cite: 1787", "cite: 1788"]
+      },
+      {
+        "question_number": "3",
+        "section": "Robot Operation",
+        "marks": 12,
+        "text": "Write a program that spins the EV3Bot in place 360 degrees in 10-degree increments, measuring SONAR distance. If distance < 40cm, emit tone f = 1600 - 20(d).",
+        "content_description": "Use predefined 'Rotate' function. Report 'TOO CLOSE' or 'OK' at the end.",
+        "source_ids": ["cite: 1794", "cite: 1795", "cite: 1796"]
+      },
+      {
+        "question_number": "4",
+        "section": "Functions and 1-D Arrays",
+        "marks": 12,
+        "text": "Compute the distance from the origin for 1024 X-Y position measurements. Write a function call and the function body for 'distances()'.",
+        "content_description": "Formula d = sqrt(x^2 + y^2). Arrays x[], y[], d[] are used.",
+        "source_ids": ["cite: 1817", "cite: 1822", "cite: 1826"]
+      },
+      {
+        "question_number": "5",
+        "section": "2-D Arrays",
+        "marks": 12,
+        "text": "Write a program to compare two minefield maps (2D arrays). Call 'findMapDifference' to find if they differ and return the row/col.",
+        "content_description": "Function prototype 'findMapDifference' provided. Returns true/false and updates reference parameters.",
+        "source_ids": ["cite: 1838", "cite: 1844", "cite: 1848"]
+      },
+      {
+        "question_number": "6",
+        "section": "Simulating a Physical Problem",
+        "marks": 12,
+        "text": "Model the flight of a rubber ball dropped from the CN tower. Acceleration a = 9.8 - 0.017v^2. Use small-time-step simulation (Delta t = 0.01).",
+        "content_description": "Step-by-step physics formulas provided for delta v, v, vavg, and delta h.",
+        "source_ids": ["cite: 1878", "cite: 1879", "cite: 1881"]
+      },
+      {
+        "question_number": "7",
+        "section": "Design Thinking",
+        "marks": 6,
+        "text": "Complete the Venn diagram below with the three areas of design thinking, and give a short explanation of each.",
+        "content_description": "Conceptual question about design thinking.",
+        "source_ids": ["cite: 1903", "cite: 1904"]
+      }
+    ]
+  },
+  {
+    "exam_metadata": {
+      "university": "Queen's University",
+      "faculty": "Faculty of Engineering & Applied Science",
+      "course": "APSC 142 - Introduction to Computer Programming for Engineers",
+      "date": "April 18, 2016",
+      "time": "2:00 pm",
+      "duration": "3 HOURS",
+      "source_ids": ["cite: 963", "cite: 964", "cite: 965", "cite: 966"]
+    },
+    "questions": [
+      {
+        "question_number": "1.A",
+        "section": "Program Comprehension",
+        "marks": 2,
+        "text": "In the box below, show the screen output that would be produced by the following program.",
+        "content_description": "Code snippet calculating y = (2*x + 5)/x and y = x * y.",
+        "source_ids": ["cite: 984", "cite: 989", "cite: 991"]
+      },
+      {
+        "question_number": "1.B",
+        "section": "Program Comprehension",
+        "marks": 3,
+        "text": "In the box below, show the screen output that would be produced by the following program.",
+        "content_description": "Code snippet checking if 'x' is within range [xLow, xHigh] derived from xMid and w.",
+        "source_ids": ["cite: 1001", "cite: 1010", "cite: 1012"]
+      },
+      {
+        "question_number": "1.C",
+        "section": "Program Comprehension",
+        "marks": 3,
+        "text": "In the box below, show the screen output that would be produced by the following program.",
+        "content_description": "Code snippet accumulating 'z' in a loop with formula z = z + 0.25*i.",
+        "source_ids": ["cite: 1023", "cite: 1029", "cite: 1031"]
+      },
+      {
+        "question_number": "1.D",
+        "section": "Program Comprehension",
+        "marks": 5,
+        "text": "In the box below, show the screen output that would be produced by the following program.",
+        "content_description": "Code snippet manipulating array 'xSet', modifying elements, and printing doubled values.",
+        "source_ids": ["cite: 1039", "cite: 1043", "cite: 1053"]
+      },
+      {
+        "question_number": "1.E",
+        "section": "Program Comprehension",
+        "marks": 4,
+        "text": "In the box below, show the screen output that would be produced by the following program.",
+        "content_description": "Code snippet with a while loop incrementing float 'a' by 2.5.",
+        "source_ids": ["cite: 1061", "cite: 1066", "cite: 1069"]
+      },
+      {
+        "question_number": "1.F",
+        "section": "Program Comprehension",
+        "marks": 3,
+        "text": "In the box below, show the screen output that would be produced by the following program.",
+        "content_description": "Code snippet with function 'scramble' passing 'y' by reference and 'x' by value.",
+        "source_ids": ["cite: 1078", "cite: 1079", "cite: 1086"]
+      },
+      {
+        "question_number": "2",
+        "section": "Computation and Output",
+        "marks": 12,
+        "text": "Compute the value of y = x^3 - 6x^2 + 11x - 6 at evenly spaced x points from 0 to 5. Set LED to red if y < 0, otherwise green.",
+        "content_description": "Polynomial equation provided. Requires step size 0.25 and wait time 500ms.",
+        "source_ids": ["cite: 1107", "cite: 1109", "cite: 1110"]
+      },
+      {
+        "question_number": "3",
+        "section": "Robot Operation",
+        "marks": 20,
+        "text": "Write a program to navigate a corridor using sensors. React to touch sensors (turn/stop) and plot a stop sign image if blocked.",
+        "content_description": "Table of sensors (Touch L/R, Ultrasonic). Logic: L bump -> L motor 20, R -20. R bump -> L -20, R 20. Both -> Stop. Stop sign pixel array provided.",
+        "source_ids": ["cite: 1124", "cite: 1129", "cite: 1131", "cite: 1171"]
+      },
+      {
+        "question_number": "4",
+        "section": "1D Arrays",
+        "marks": 12,
+        "text": "Write a program that counts values greater than 15 in a temperature list. Fill 'warmTemps' array with binary values (1 for >15).",
+        "content_description": "Data list: [11.1, 13.7, ...]. Output format: 'Temps above 15: X'.",
+        "source_ids": ["cite: 1192", "cite: 1194", "cite: 1195"]
+      },
+      {
+        "question_number": "5",
+        "section": "Functions",
+        "marks": 20,
+        "text": "Implement 'updateLED' and 'updateSpeed' based on measured distance and ambient light. LED colour and Max Speed depend on distance table.",
+        "content_description": "Table provided: d >= 30 (Green, 60), 30 > d >= 10 (Orange, 25), d < 10 (Red, 0). Speed limited by ambient light.",
+        "source_ids": ["cite: 1213", "cite: 1217", "cite: 1218"]
+      }
+    ]
+  },
+  {
+    "exam_metadata": {
+      "university": "Queen's University",
+      "faculty": "Faculty of Engineering & Applied Science",
+      "course": "APSC 142 - Introduction to Computer Programming for Engineers",
+      "date": "April 24, 2017",
+      "time": "2:00 pm",
+      "duration": "3 HOURS",
+      "source_ids": ["cite: 1975", "cite: 1976", "cite: 1977", "cite: 1978"]
+    },
+    "questions": [
+      {
+        "question_number": "1.A",
+        "section": "Program Comprehension",
+        "marks": 5,
+        "text": "In the box below, show the screen output that would be produced by the following code.",
+        "content_description": "Code snippet involving mixed arithmetic, modulus, and logical NOT operations on x, y, z.",
+        "source_ids": ["cite: 1996", "cite: 2003", "cite: 2012"]
+      },
+      {
+        "question_number": "1.B",
+        "section": "Program Comprehension",
+        "marks": 5,
+        "text": "In the box below, show the screen output that would be produced by the following code.",
+        "content_description": "Code snippet with a for loop summing 'count' and an if-else block checking the final count.",
+        "source_ids": ["cite: 2026", "cite: 2031", "cite: 2036"]
+      },
+      {
+        "question_number": "1.C",
+        "section": "Program Comprehension",
+        "marks": 5,
+        "text": "In the box below, show the screen output that would be produced by the following code.",
+        "content_description": "Code snippet using 'newFunction' with pass-by-reference. Manipulates array 'set' and 'newSet'.",
+        "source_ids": ["cite: 2057", "cite: 2062", "cite: 2074"]
+      },
+      {
+        "question_number": "2",
+        "section": "Computation and Output",
+        "marks": 15,
+        "text": "Compute values of y = 4x^3 + 3x^2 + 2x - 1 between x=0 and x=2. Find max value and sum of values.",
+        "content_description": "Polynomial equation provided. Requires array storage 'yData' and specific formatting.",
+        "source_ids": ["cite: 2087", "cite: 2089", "cite: 2090"]
+      },
+      {
+        "question_number": "3",
+        "section": "Robot Operation",
+        "marks": 25,
+        "text": "Write a program for the EV3 robot to react to obstacles and coloured tiles. Logic involves Green/Yellow/Red/Blue tiles and turning based on touch sensors.",
+        "content_description": "Functions 'bumpTurn', 'distanceSpeed', 'colourToLED' required. Sensor ports listed. Complex state logic (e.g., flashing red until Green tile).",
+        "source_ids": ["cite: 2102", "cite: 2103", "cite: 2109", "cite: 2115"]
+      },
+      {
+        "question_number": "4",
+        "section": "Function and 1D Arrays",
+        "marks": 15,
+        "text": "Write a program that computes differences between subsequent array values, finds average difference, and counts positive differences.",
+        "content_description": "Input array 'inputData' and example result 'diffData' provided. Output format specified.",
+        "source_ids": ["cite: 2156", "cite: 2157", "cite: 2164"]
+      },
+      {
+        "question_number": "5",
+        "section": "2D Arrays",
+        "marks": 15,
+        "text": "Write a program that analyzes a 2D array: sum of rows, product of columns, count elements < 5.",
+        "content_description": "Example 3x3 array provided. Output format specified for row sums and column products.",
+        "source_ids": ["cite: 2182", "cite: 2183", "cite: 2187"]
+      },
+      {
+        "question_number": "6",
+        "section": "Algorithms",
+        "marks": 10,
+        "text": "Complete the program to determine unique values in 'rawData' and store them in 'uniqueData'.",
+        "content_description": "Example input [5, 3, 2, 5, ...] and output [5, 3, 2, 7, ...] provided. Hint mentions using a 'repeat' variable.",
+        "source_ids": ["cite: 2210", "cite: 2213", "cite: 2228"]
+      }
+    ]
+  },
+  {
+    "exam_metadata": {
+        "university": "Queen's University",
+        "faculty": "Faculty of Engineering & Applied Science",
+        "course": "APSC 142 - Introduction to Computer Programming for Engineers",
+        "date": "Dec 17, 2016",
+        "time": "9:00 am",
+        "duration": "3 HOURS",
+        "source_ids": ["cite: 3", "cite: 4", "cite: 6", "cite: 7"]
+    },
+    "questions": [
+        {
+        "question_number": "1.A",
+        "section": "Program Comprehension",
+        "marks": 4,
+        "text": "In the box below, show the screen output that would be produced by the following program.",
+        "content_description": "A C code snippet is provided inside a main task. It declares integer x = 3 and integer y = 7. It calculates y = (2 * x + 5.0) / x. It displays a text line printing y. It then calculates y = x * y and displays y again.",
+        "source_ids": ["cite: 23", "cite: 24", "cite: 28", "cite: 33"]
+        },
+        {
+        "question_number": "1.B",
+        "section": "Program Comprehension",
+        "marks": 4,
+        "text": "In the box below, show the screen output that would be produced by the following program.",
+        "content_description": "A C code snippet is provided with a do-while loop. Integers i=0 and j=3 are initialized. The loop displays j, increments i, and updates j = j + i. The loop continues while j < 15.",
+        "source_ids": ["cite: 34", "cite: 35", "cite: 38", "cite: 44"]
+        },
+        {
+        "question_number": "1.C",
+        "section": "Program Comprehension",
+        "marks": 4,
+        "text": "The function below is supposed to arrange the two passed-in integer variables, swapping them if necessary so that upon return, val1 is not less than val2. If the values were swapped, then the function returns the value 1; otherwise, it returns the value 0. In the box below, write the lines of C code that will complete the function.",
+        "content_description": "An incomplete C function named 'swap' is provided. It takes two integers by reference (int &val1, int &val2). There is space for code, followed by 'return swapped;'.",
+        "source_ids": ["cite: 47", "cite: 48", "cite: 50", "cite: 51"]
+        },
+        {
+        "question_number": "2",
+        "section": "Computation and Output",
+        "marks": 12,
+        "text": "Write a program that calculates values of the polynomial 5x^3 + 2x^2 - 15x + 3 at x=0, x=0.2, x=0.4, ..., x=5.0 (that is, for values of x spaced apart by 0.2 between a start value of 0 and an end value of 3.0). Your program should then display the minimum value of the polynomial in that same range [0, 3], as well as the value of x at which the minimum occurs.",
+        "content_description": "The question includes a mathematical polynomial equation: 5x^3 + 2x^2 - 15x + 3. There is a discrepancy in the text regarding the end range (mentions 5.0 first, then clarifies 'end value of 3.0'). A 'task main()' skeleton is provided.",
+        "source_ids": ["cite: 57", "cite: 58", "cite: 59", "cite: 60"]
+        },
+        {
+        "question_number": "3",
+        "section": "Robot Operation",
+        "marks": 12,
+        "text": "A robot is placed at a point 200 cm away from a wall. The robot sonar sensor is connected to port 1, and the touch (bumper) sensors are attached to ports 2 and 3 and the sound sensor is connected to port 4. The left motor is connected to port A and the right motor is connected to port B. Complete the code to drive the robot forward, display sensor data, reduce speed at 40cm, and stop if it bumps the wall.",
+        "content_description": "Includes specific logic requirements: Drive full speed towards wall. Continuously display distance and sound level. At distance 40cm, reduce speed to 20%. If touch sensors (bumpers) hit the wall, stop, display 'Ooops', and stop displaying sensor data. Code skeleton provided includes 'readTouchSensor' function prototype and a while loop structure.",
+        "source_ids": ["cite: 64", "cite: 65", "cite: 66", "cite: 67", "cite: 70", "cite: 71"]
+        },
+        {
+        "question_number": "4",
+        "section": "1-D Arrays",
+        "marks": 12,
+        "text": "You are given a series of eight temperature measurements. Write a program that first calculates the average temperature and displays it on line 2. The program must also count the number of values greater than the average and less than the average, displaying these counts on lines 4 and 6.",
+        "content_description": "The data set provided is: 11.1, 13.7, 12.8, 15.2, 17.9, 14.7, 18.1, 19.0. A task main skeleton is provided with comments guiding the declaration, initialization, computation, and display steps.",
+        "source_ids": ["cite: 98", "cite: 99", "cite: 100", "cite: 101", "cite: 102"]
+        },
+        {
+        "question_number": "5",
+        "section": "2-D Arrays",
+        "marks": 12,
+        "text": "Write a program and two functions called flipArrayHorizontal() and flipArrayVertical() to swap the values in a 4x4 integer array and store it in another array.",
+        "content_description": "Visual tables are provided showing an input array (integers 1 through 16 arranged sequentially) and the resulting arrays after a horizontal flip (rows reversed) and a vertical flip (columns reversed). Code skeletons are provided for 'task main', 'flipArrayHorizontal', and 'flipArrayVertical'.",
+        "source_ids": ["cite: 116", "cite: 117", "cite: 119", "cite: 121", "cite: 123"]
+        },
+        {
+        "question_number": "6",
+        "section": "Simulating a Physical Problem",
+        "marks": 12,
+        "text": "A rubber ball is dropped off the observation deck of the CN tower on a windless day. Accounting for air resistance and gravity, the ball undergoes a downward vertical acceleration given by a = (9.8 - 0.021v^2). Write a program that models the flight using a small-time-step simulation (Delta t = 0.01 seconds).",
+        "content_description": "Includes physics equations for acceleration (a = 9.8 - 0.021v^2), velocity increase (Delta v = a * Delta t), final velocity (v = vprev + Delta v), and height change (Delta h = vavg * Delta t). The program must loop until height <= 0 and display the time. Skeleton code defines HINIT as 346 and DELTAT as 0.01.",
+        "source_ids": ["cite: 165", "cite: 166", "cite: 167", "cite: 169", "cite: 171"]
+        },
+        {
+        "question_number": "6.A",
+        "section": "Design Thinking",
+        "marks": 3,
+        "text": "Personas are an important part of the design thinking process. Give an example of a persona.",
+        "content_description": "No visuals or code. Text-based conceptual question. Note: This is labeled 6.A in the text, despite the previous question also being labeled Question 6.",
+        "source_ids": ["cite: 191", "cite: 192"]
+        },
+        {
+        "question_number": "6.B",
+        "section": "Design Thinking",
+        "marks": 3,
+        "text": "A Minimum Viable Product is an important test of the economic feasibility of a product. Give an example of a minimum viable product.",
+        "content_description": "No visuals or code. Text-based conceptual question.",
+        "source_ids": ["cite: 193", "cite: 194"]
+            }
+        ]
+    }
+]
