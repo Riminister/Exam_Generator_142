@@ -1,0 +1,24 @@
+graph TD
+    A[Raw JSON Data] -->|Parse & Embed| B(Vector Database)
+    B -->|Retrieve Style Examples| C{Generation Engine}
+    C -->|Draft a couple of question|
+    D -->|First feedback loop|
+    C --> |Draft whole exam|
+    D -->|Feedback Loop| C
+    E -->|Approved| F[Final JSON Exam]
+    F -->|Created pdf of a final|
+
+
+exam-generator/
+├── data/
+│   └── question_bank.json       # Your source data
+├── src/
+│   ├── models.py            # Pydantic schemas (Question, Exam)
+│   ├── ingest.py            # Script to load JSON -> Vector DB. Give some relevance to difficulty marks over exam total. And date relevance
+│   ├── retriever.py         # Logic to fetch "style examples"
+│   ├── generator.py         # LLM calls (The Prompt Engineering)
+│   └── critic.py            # Logic to evaluate generated questions
+├── output/
+│   └── new_exam_v1.json
+├── .env                     # API Keys
+└── main.py                  # Entry point

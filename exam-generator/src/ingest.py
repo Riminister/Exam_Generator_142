@@ -12,7 +12,16 @@ import chromadb
 from chromadb.config import Settings
 from dotenv import load_dotenv
 from openai import OpenAI
-from .models import Exam, Question
+
+# Handle both relative and absolute imports
+try:
+    from .models import Exam, Question
+except ImportError:
+    # When running as script directly
+    import sys
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).parent))
+    from models import Exam, Question
 
 # Load environment variables
 load_dotenv(encoding='utf-8')

@@ -9,7 +9,16 @@ from typing import List, Dict, Any
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
-from .models import Question, ExamMetadata
+
+# Handle both relative and absolute imports
+try:
+    from .models import Question, ExamMetadata
+except ImportError:
+    # When running as script directly
+    import sys
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).parent))
+    from models import Question, ExamMetadata
 
 # Load environment variables
 load_dotenv(encoding='utf-8')
@@ -122,7 +131,8 @@ class QuestionRetriever:
         self,
         section: str = None,
         n_examples: int = 5,
-        difficulty: str = "medium"
+        difficulty: str = "medium",
+        ensure_diversity: bool = True
     ) -> List[Dict[str, Any]]:
         """
         Retrieve style examples for exam generation.
@@ -131,41 +141,80 @@ class QuestionRetriever:
             section: Optional section to filter by
             n_examples: Number of examples to retrieve
             difficulty: Target difficulty (easy, medium, hard)
+            ensure_diversity: If True, ensures examples from different sections
         
         Returns:
             List of example questions
         """
-        # Build query based on difficulty and section
-        query_parts = []
-        
-        if section:
-            query_parts.append(f"Section: {section}")
-        
-        # Add difficulty context
-        if difficulty == "easy":
-            query_parts.append("simple basic programming question")
-        elif difficulty == "hard":
-            query_parts.append("complex advanced programming question")
+        if section and not ensure_diversity:
+            # Get examples from specific section only
+            query_parts = [f"Section: {section}"]
+            
+            # Add difficulty context
+            if difficulty == "easy":
+                query_parts.append("simple basic programming question")
+            elif difficulty == "hard":
+                query_parts.append("complex advanced programming question")
+            else:
+                query_parts.append("programming question")
+            
+            query = " | ".join(query_parts)
+            
+            # Retrieve questions
+            results = self.retrieve_by_query(
+                query=query,
+                n_results=n_examples * 2,
+                section_filter=section
+            )
+            
+            # Filter and sort by relevance
+            filtered_results = sorted(
+                results,
+                key=lambda x: x['relevance_score'],
+                reverse=True
+            )[:n_examples]
+            
+            return filtered_results
         else:
-            query_parts.append("programming question")
-        
-        query = " | ".join(query_parts) if query_parts else "programming exam question"
-        
-        # Retrieve questions
-        results = self.retrieve_by_query(
-            query=query,
-            n_results=n_examples * 2,  # Get more to filter by difficulty
-            section_filter=section
-        )
-        
-        # Filter and sort by relevance
-        filtered_results = sorted(
-            results,
-            key=lambda x: x['relevance_score'],
-            reverse=True
-        )[:n_examples]
-        
-        return filtered_results
+            # Get diverse examples from multiple sections
+            all_results = []
+            section_stats = self.get_section_statistics()
+            sections_list = list(section_stats.keys())
+            
+            # Get examples from different sections
+            examples_per_section = max(1, n_examples // min(5, len(sections_list)))
+            
+            for sec in sections_list[:min(8, len(sections_list))]:  # Try up to 8 sections
+                query_parts = [f"Section: {sec}"]
+                
+                # Add difficulty context
+                if difficulty == "easy":
+                    query_parts.append("simple basic programming question")
+                elif difficulty == "hard":
+                    query_parts.append("complex advanced programming question")
+                else:
+                    query_parts.append("programming question")
+                
+                query = " | ".join(query_parts)
+                
+                # Retrieve questions from this section
+                section_results = self.retrieve_by_query(
+                    query=query,
+                    n_results=examples_per_section * 2,
+                    section_filter=sec
+                )
+                
+                # Add to all results
+                all_results.extend(section_results[:examples_per_section])
+            
+            # Sort by relevance and return top n_examples
+            filtered_results = sorted(
+                all_results,
+                key=lambda x: x['relevance_score'],
+                reverse=True
+            )[:n_examples]
+            
+            return filtered_results
     
     def get_section_statistics(self) -> Dict[str, int]:
         """Get statistics about available sections."""

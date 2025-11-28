@@ -88,7 +88,7 @@ class ExamGenerationRequest(BaseModel):
     course: str = "APSC 142 - Introduction to Computer Programming for Engineers"
     target_marks: int = 100
     difficulty: Optional[str] = "medium"  # easy, medium, hard
-    sections: Optional[List[str]] = None
+    sections: Optional[List[str]] = 6
     num_questions: Optional[int] = None
     style_examples_count: int = 5
 

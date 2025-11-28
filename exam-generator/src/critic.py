@@ -7,7 +7,16 @@ from typing import List, Dict, Any, Optional
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
-from models import GeneratedQuestion, GeneratedExam, Question
+
+# Handle both relative and absolute imports
+try:
+    from .models import GeneratedQuestion, GeneratedExam, Question
+except ImportError:
+    # When running as script directly
+    import sys
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).parent))
+    from models import GeneratedQuestion, GeneratedExam, Question
 
 # Load environment variables
 load_dotenv(encoding='utf-8')
@@ -64,7 +73,7 @@ Evaluate questions based on:
         
         try:
             response = client.chat.completions.create(
-                model="gpt-4o",
+                model="gpt-4o-mini",
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}
@@ -75,17 +84,29 @@ Evaluate questions based on:
             
             evaluation_text = response.choices[0].message.content
             
-            # Extract score (simple parsing)
+            # Extract score (improved parsing)
             score = 7.0  # Default
-            if "score" in evaluation_text.lower():
-                try:
-                    # Try to find a number between 0-10
-                    import re
-                    scores = re.findall(r'\b([0-9]|10)\b', evaluation_text)
-                    if scores:
-                        score = float(scores[0])
-                except:
-                    pass
+            try:
+                import re
+                # Look for patterns like "8/10", "score: 8", "8 out of 10", "Overall quality score: 8"
+                # Try to find the first number that appears to be a score
+                patterns = [
+                    r'(?:score|quality|rating)[:\s]+(\d+(?:\.\d+)?)\s*(?:/|out of)\s*10',  # "score: 8/10"
+                    r'(\d+(?:\.\d+)?)\s*/?\s*10',  # "8/10" or "8 10"
+                    r'(?:Overall|Quality|Score)[:\s]+(\d+(?:\.\d+)?)',  # "Overall: 8"
+                    r'(\d+(?:\.\d+)?)\s*(?:out of|/)\s*10',  # "8 out of 10"
+                ]
+                
+                for pattern in patterns:
+                    matches = re.findall(pattern, evaluation_text, re.IGNORECASE)
+                    if matches:
+                        potential_score = float(matches[0])
+                        if 0 <= potential_score <= 10:
+                            score = potential_score
+                            break
+            except Exception as e:
+                print(f"Warning: Could not parse score from evaluation: {e}")
+                score = 7.0  # Default fallback
             
             return {
                 "score": score,
