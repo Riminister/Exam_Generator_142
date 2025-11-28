@@ -53,14 +53,13 @@ Evaluate questions based on:
         user_prompt_parts = [
             "Evaluate this exam question:",
             f"Section: {question.section}",
-            f"Marks: {question.marks}",
             f"Text: {question.text}",
             "",
             "Provide:",
             "1. Overall quality score (0-10)",
             "2. Specific feedback on what works well",
             "3. Specific suggestions for improvement",
-            "4. Whether it matches the difficulty level for the marks assigned"
+            "4. Whether the question is appropriate for first-year engineering students"
         ]
         
         if reference_questions:

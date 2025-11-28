@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Optional
 from datetime import datetime
 
-from src.models import ExamGenerationRequest, GeneratedExam
+from src.models import GeneratedExam
 from src.retriever import QuestionRetriever
 from src.generator import ExamGenerator
 from src.critic import QuestionCritic
@@ -18,12 +18,12 @@ from src.critic import QuestionCritic
 def main():
     """Main function for exam generation with feedback loop."""
     parser = argparse.ArgumentParser(description="Generate APSC 142 exam questions")
-    parser.add_argument("--marks", type=int, default=100, help="Target total marks")
     parser.add_argument("--difficulty", type=str, default="medium", choices=["easy", "medium", "hard"])
-    parser.add_argument("--num-questions", type=int, help="Number of questions (auto-calculated if not specified)")
-    parser.add_argument("--sections", nargs="+", help="Specific sections to include")
+    parser.add_argument("--num-questions", type=int, default=10, help="Number of questions to generate")
+    parser.add_argument("--sections", nargs="+", help="Specific sections to include (auto-selects if not specified)")
+    parser.add_argument("--section", type=str, help="Generate questions for a single specific section")
     parser.add_argument("--style-examples", type=int, default=5, help="Number of style examples to retrieve")
-    parser.add_argument("--iterations", type=int, default=2, help="Number of feedback loop iterations")
+    parser.add_argument("--min-score", type=float, default=7.0, help="Minimum quality score to save question (default: 7.0)")
     parser.add_argument("--output", type=str, default="output/newquestionbank.json", help="Output file path")
     
     args = parser.parse_args()
@@ -45,78 +45,196 @@ def main():
     generator = ExamGenerator(retriever=retriever)
     critic = QuestionCritic()
     
-    # Create generation request
-    request = ExamGenerationRequest(
-        target_marks=args.marks,
-        difficulty=args.difficulty,
-        num_questions=args.num_questions,
-        sections=args.sections,
-        style_examples_count=args.style_examples
-    )
+    # Determine sections to use
+    if args.section:
+        # Single section specified
+        sections_to_use = [args.section]
+        print(f"\nGenerating questions for section: {args.section}")
+    elif args.sections:
+        # Multiple sections specified
+        sections_to_use = args.sections
+        print(f"\nGenerating questions for sections: {', '.join(sections_to_use)}")
+    else:
+        # Auto-select sections from database
+        if retriever:
+            section_stats = retriever.get_section_statistics()
+            sorted_sections = sorted(section_stats.items(), key=lambda x: x[1], reverse=True)
+            sections_to_use = [s[0] for s in sorted_sections[:8]]  # Top 8 sections
+            print(f"\nAuto-selected sections: {', '.join(sections_to_use)}")
+        else:
+            # Default sections
+            sections_to_use = [
+                "Program Comprehension",
+                "Computation and Output", 
+                "1D Arrays",
+                "2D Arrays",
+                "Functions",
+                "Algorithms"
+            ]
+            print(f"\nUsing default sections: {', '.join(sections_to_use)}")
+    
+    # Distribute questions across sections (ensure each section gets at least 1 if possible)
+    num_questions = args.num_questions
+    num_sections = len(sections_to_use)
+    
+    if num_questions < num_sections:
+        # If fewer questions than sections, use first N sections
+        sections_to_use = sections_to_use[:num_questions]
+        num_sections = len(sections_to_use)
+        print(f"Note: Only {num_questions} questions requested, using {num_sections} sections")
+    
+    # Distribute evenly, ensuring each section gets at least 1
+    questions_per_section = max(1, num_questions // num_sections)
+    remainder = num_questions % num_sections
+    
+    section_assignments = []
+    # First pass: give each section at least 1 question
+    for section in sections_to_use:
+        section_assignments.append(section)
+    
+    # Second pass: distribute remaining questions
+    for i in range(num_questions - num_sections):
+        section_assignments.append(sections_to_use[i % num_sections])
+    
+    # Shuffle to avoid predictable patterns
+    import random
+    random.shuffle(section_assignments)
+    
+    print(f"\nQuestion distribution:")
+    from collections import Counter
+    for section, count in Counter(section_assignments).items():
+        print(f"  - {section}: {count} question(s)")
     
     # Retrieve style examples - ensure diversity
     style_examples = None
     if retriever:
-        print(f"\nRetrieving {args.style_examples} style examples (ensuring section diversity)...")
+        print(f"\nRetrieving {args.style_examples} style examples...")
         style_examples = retriever.retrieve_style_examples(
             section=None,
             n_examples=args.style_examples,
             difficulty=args.difficulty,
-            ensure_diversity=True  # Get examples from different sections
+            ensure_diversity=True
         )
         print(f"✓ Retrieved {len(style_examples)} examples")
-        if style_examples:
-            sections_in_examples = set(ex.get('section', '') for ex in style_examples)
-            print(f"  Examples from {len(sections_in_examples)} different sections: {', '.join(sorted(sections_in_examples))}")
     
-    # Feedback loop: Generate -> Evaluate -> Refine
-    best_exam: Optional[GeneratedExam] = None
-    best_score = 0.0
-    all_evaluations = []  # Track all evaluations to collect approved questions
+    # Generate and evaluate questions individually
+    print(f"\n{'='*60}")
+    print(f"Generating {args.num_questions} individual questions")
+    print(f"{'='*60}\n")
     
-    for iteration in range(args.iterations):
-        print(f"\n{'='*60}")
-        print(f"Iteration {iteration + 1}/{args.iterations}")
-        print(f"{'='*60}")
+    all_approved_questions = []
+    total_generated = 0
+    total_approved = 0
+    
+    for i, section in enumerate(section_assignments, 1):
+        print(f"\n[{i}/{args.num_questions}] Generating question for '{section}' section...")
         
-        # Generate exam
-        print("\n[Step 1] Generating exam...")
-        exam = generator.generate_exam(request, style_examples)
+        # Get diverse examples - use semantic search for better diversity
+        section_examples = None
+        if retriever:
+            # Use semantic search to find diverse questions in this section
+            # Query based on section but encourage diversity
+            query = f"{section} programming question {args.difficulty} difficulty"
+            section_examples = retriever.retrieve_by_query(
+                query=query,
+                n_results=8,  # Get more to have variety
+                section_filter=None  # Don't filter by section - use semantic similarity
+            )
+            
+            # Normalize section names for matching
+            def normalize_section(s):
+                if not s:
+                    return ""
+                s = s.strip()
+                if "1D Array" in s or "1-D Array" in s:
+                    return "1D Arrays"
+                if "2D Array" in s or "2-D Array" in s:
+                    return "2D Arrays"
+                if "Function" in s and "Array" in s:
+                    return "Functions and Arrays"
+                return s
+            
+            normalized_section = normalize_section(section)
+            
+            # Keep questions from same or related sections
+            filtered_examples = []
+            for ex in section_examples:
+                ex_section = normalize_section(ex.get('section', ''))
+                if ex_section == normalized_section:
+                    filtered_examples.append(ex)
+            
+            # If we have enough from exact section, use those; otherwise use broader results
+            if len(filtered_examples) >= 3:
+                section_examples = filtered_examples[:4]
+            else:
+                # Use broader results for diversity
+                section_examples = section_examples[:4]
         
-        if not exam:
-            print("✗ Failed to generate exam")
+        # Fallback to provided style examples if retriever didn't work
+        if not section_examples and style_examples:
+            # Use diverse examples from style_examples
+            section_examples = [ex for ex in style_examples if ex.get('section') == section]
+            if len(section_examples) < 3:
+                # Add some from other sections for diversity
+                other_examples = [ex for ex in style_examples if ex.get('section') != section]
+                section_examples.extend(other_examples[:2])
+            section_examples = section_examples[:4]  # Limit to 4 examples
+        
+        # Generate individual question (marks inferred from reference questions)
+        question = generator.generate_question(
+            section=section,
+            style_examples=section_examples,
+            difficulty=args.difficulty
+        )
+        
+        if not question:
+            print(f"  ✗ Failed to generate question")
             continue
         
-        print(f"✓ Generated {len(exam.questions)} questions")
+        total_generated += 1
+        print(f"  ✓ Generated question")
         
-        # Evaluate exam
-        print("\n[Step 2] Evaluating exam...")
-        evaluation = critic.evaluate_exam(exam, style_examples)
-        all_evaluations.append((exam, evaluation))  # Store for later question extraction
+        # Evaluate individual question
+        print(f"  Evaluating question...")
+        evaluation = critic.evaluate_question(question, section_examples)
+        score = evaluation.get('score', 0)
+        approved = evaluation.get('approved', False)
         
-        # Display feedback
-        feedback = critic.provide_feedback(evaluation)
-        print("\n" + feedback)
+        print(f"  Quality score: {score:.1f}/10, Approved: {approved}")
         
-        # Track best exam
-        if evaluation['overall_score'] > best_score:
-            best_score = evaluation['overall_score']
-            best_exam = exam
-        
-        # If approved, we can stop early
-        if evaluation['exam_approved']:
-            print("\n✓ Exam approved! Stopping early.")
-            best_exam = exam
-            break
-        
-        # If not last iteration, provide refinement guidance
-        if iteration < args.iterations - 1:
-            print("\n[Step 3] Refining for next iteration...")
-            # Could add logic here to adjust request based on feedback
-            # For now, we'll just regenerate with same parameters
+        # Save if meets minimum score
+        if score >= args.min_score:
+            try:
+                # Convert question to dict
+                question_dict = question.model_dump() if hasattr(question, 'model_dump') else question
+                question_dict['difficulty'] = args.difficulty
+                question_dict['quality_score'] = score
+                question_dict['generated_date'] = datetime.now().strftime("%Y-%m-%d")
+                
+                # Remove exam-specific fields
+                if 'question_number' in question_dict:
+                    del question_dict['question_number']
+                if 'marks' in question_dict:
+                    del question_dict['marks']
+                if 'explanation' in question_dict and not question_dict.get('explanation'):
+                    del question_dict['explanation']
+                
+                all_approved_questions.append(question_dict)
+                total_approved += 1
+                print(f"  ✓ Question approved and added to bank")
+            except Exception as e:
+                print(f"  ✗ Error processing question: {e}")
+        else:
+            print(f"  ✗ Question rejected (score {score:.1f} < {args.min_score})")
+    
+    print(f"\n{'='*60}")
+    print(f"Generation complete!")
+    print(f"  Generated: {total_generated} questions")
+    print(f"  Approved: {total_approved} questions (score >= {args.min_score})")
+    print(f"{'='*60}")
     
     # Save approved questions to question bank
-    if best_exam:
+    if all_approved_questions:
         # Get the exam-generator directory (parent of script location)
         script_dir = Path(__file__).parent
         project_root = script_dir  # main.py is in exam-generator root
@@ -131,44 +249,6 @@ def main():
         output_path.parent.mkdir(parents=True, exist_ok=True)
         
         try:
-            # Extract approved questions (score >= 7.0) from all iterations
-            all_approved_questions = []
-            
-            # Collect questions from all iterations that were approved
-            for exam, evaluation in all_evaluations:
-                for q_eval in evaluation.get('question_evaluations', []):
-                    score = q_eval.get('score', 0)
-                    # Only save questions with score >= 7.0
-                    if score >= 7.0:
-                        question = q_eval.get('question')
-                        if question:
-                            # Add difficulty and metadata to question
-                            question_dict = question.model_dump() if hasattr(question, 'model_dump') else question
-                            question_dict['difficulty'] = args.difficulty
-                            question_dict['quality_score'] = score
-                            question_dict['generated_date'] = datetime.now().strftime("%Y-%m-%d")
-                            # Remove question_number as it's exam-specific
-                            if 'question_number' in question_dict:
-                                del question_dict['question_number']
-                            # Remove explanation if present (not needed in question bank)
-                            if 'explanation' in question_dict and not question_dict['explanation']:
-                                del question_dict['explanation']
-                            all_approved_questions.append(question_dict)
-            
-            # If no approved questions from evaluation, use all questions from best exam
-            if not all_approved_questions and best_exam:
-                print("Warning: No approved questions from evaluation, saving all questions")
-                for q in best_exam.questions:
-                    q_dict = q.model_dump() if hasattr(q, 'model_dump') else q
-                    q_dict['difficulty'] = args.difficulty
-                    q_dict['quality_score'] = 7.0  # Default score
-                    q_dict['generated_date'] = datetime.now().strftime("%Y-%m-%d")
-                    if 'question_number' in q_dict:
-                        del q_dict['question_number']
-                    if 'explanation' in q_dict and not q_dict['explanation']:
-                        del q_dict['explanation']
-                    all_approved_questions.append(q_dict)
-            
             # Load existing question bank if it exists
             existing_questions = []
             if output_path.exists():
@@ -186,8 +266,15 @@ def main():
             all_questions = existing_questions + all_approved_questions
             
             # Save as question bank (array of questions)
+            print(f"\nSaving to: {output_path.absolute()}")
             with open(output_path, 'w', encoding='utf-8') as f:
                 json.dump(all_questions, f, indent=2, ensure_ascii=False)
+            
+            # Verify file was written
+            if output_path.exists() and output_path.stat().st_size > 0:
+                print(f"✓ File saved successfully ({output_path.stat().st_size} bytes)")
+            else:
+                print(f"✗ Warning: File may be empty or not saved correctly")
             
             # Print statistics
             sections_used = {}
@@ -200,21 +287,29 @@ def main():
             print(f"✓ Question bank updated: {output_path.absolute()}")
             print(f"  New questions added: {len(all_approved_questions)}")
             print(f"  Total questions in bank: {len(all_questions)}")
-            print(f"  Best score: {best_score:.1f}/10")
-            print(f"\n  New questions by section:")
-            for section, count in sections_used.items():
-                print(f"    - {section}: {count} question(s)")
-            print(f"\n  New questions by difficulty:")
-            for diff, count in difficulties_used.items():
-                print(f"    - {diff}: {count} question(s)")
+            if all_approved_questions:
+                print(f"\n  New questions by section:")
+                for section, count in sections_used.items():
+                    print(f"    - {section}: {count} question(s)")
+                print(f"\n  New questions by difficulty:")
+                for diff, count in difficulties_used.items():
+                    print(f"    - {diff}: {count} question(s)")
+            else:
+                print(f"\n  ⚠ No approved questions to add (all scores < {args.min_score})")
             print(f"{'='*60}")
+            
+            # Optionally add new questions to vector database
+            if all_approved_questions:
+                print(f"\nWould you like to add these questions to the vector database?")
+                print(f"This allows them to be used as style examples in future generations.")
+                print(f"Run: py src/add_to_vector_db.py --file {output_path.name}")
         except Exception as e:
             print(f"\n✗ Error saving question bank: {e}")
             import traceback
             traceback.print_exc()
             return 1
     else:
-        print("\n✗ Failed to generate a valid exam")
+        print("\n✗ No approved questions to save")
         return 1
     
     return 0

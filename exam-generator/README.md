@@ -55,20 +55,26 @@ This will:
 - Create embeddings for all questions
 - Store in ChromaDB with relevance scores (difficulty + date)
 
-### Step 2: Generate Exam
-Generate a new exam:
+### Step 2: Generate Questions
+Generate individual questions:
 ```bash
-py main.py --marks 100 --difficulty medium
+py main.py --num-questions 10 --difficulty medium
 ```
 
 Options:
-- `--marks`: Target total marks (default: 100)
+- `--num-questions`: Number of questions to generate (default: 10)
 - `--difficulty`: easy, medium, or hard (default: medium)
-- `--num-questions`: Number of questions (auto-calculated if not specified)
-- `--sections`: Specific sections to include
+- `--section`: Generate questions for a single specific section
+- `--sections`: Generate questions for multiple specific sections
 - `--style-examples`: Number of style examples to retrieve (default: 5)
-- `--iterations`: Feedback loop iterations (default: 2)
-- `--output`: Output file path (default: output/new_exam_v1.json)
+- `--min-score`: Minimum quality score to save question (default: 7.0)
+- `--output`: Output file path (default: output/newquestionbank.json)
+
+### Step 3: Add Generated Questions to Vector DB (Optional)
+Add newly generated questions to the vector database so they can be used as style examples:
+```bash
+py src/add_to_vector_db.py --file output/newquestionbank.json
+```
 
 ### Example
 ```bash

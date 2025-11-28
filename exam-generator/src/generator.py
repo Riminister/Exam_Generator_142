@@ -42,6 +42,38 @@ class ExamGenerator:
         """Initialize generator with optional retriever for style examples."""
         self.retriever = retriever
     
+    def _normalize_section_name(self, section: str) -> str:
+        """Normalize section names to handle variations."""
+        if not section:
+            return ""
+        # Normalize common variations
+        normalized = section.strip()
+        # Handle array variations
+        if "1D Array" in normalized or "1-D Array" in normalized:
+            return "1D Arrays"
+        if "2D Array" in normalized or "2-D Array" in normalized:
+            return "2D Arrays"
+        # Handle function variations
+        if "Function" in normalized and "Array" in normalized:
+            return "Functions and Arrays"
+        return normalized
+    
+    def _are_sections_related(self, section1: str, section2: str) -> bool:
+        """Check if two sections are related (e.g., both array-related)."""
+        array_keywords = ["array", "arrays"]
+        function_keywords = ["function", "functions"]
+        
+        s1_lower = section1.lower()
+        s2_lower = section2.lower()
+        
+        # Both are array-related
+        if any(kw in s1_lower for kw in array_keywords) and any(kw in s2_lower for kw in array_keywords):
+            return True
+        # Both are function-related
+        if any(kw in s1_lower for kw in function_keywords) and any(kw in s2_lower for kw in function_keywords):
+            return True
+        return False
+    
     def _get_section_description(self, section: str) -> str:
         """Get description of what a section focuses on."""
         descriptions = {
@@ -69,7 +101,6 @@ class ExamGenerator:
     def generate_question(
         self,
         section: str,
-        marks: int,
         style_examples: List[Dict[str, Any]] = None,
         difficulty: str = "medium"
     ) -> Optional[GeneratedQuestion]:
@@ -78,12 +109,11 @@ class ExamGenerator:
         
         Args:
             section: Question section/topic
-            marks: Points for this question
             style_examples: List of example questions for style reference
-            difficulty: Target difficulty level
+            difficulty: Target difficulty level (easy/medium/hard)
         
         Returns:
-            GeneratedQuestion or None if generation fails
+            GeneratedQuestion
         """
         # Build system prompt with strong section enforcement
         system_prompt = f"""You are an expert at creating programming exam questions for APSC 142 (Introduction to Computer Programming for Engineers).
@@ -108,49 +138,61 @@ Your questions should:
         user_prompt_parts = [
             f"CRITICAL INSTRUCTION: Generate a {difficulty} difficulty question for the '{section}' section.",
             f"The question MUST be about {section_desc}.",
-            f"DO NOT create a 'Program Comprehension' question. This MUST be a '{section}' question.",
-            f"The question should be worth {marks} marks.",
+            f"DO NOT create a 'Program Comprehension' question unless section is 'Program Comprehension'.",
             "",
             f"Section '{section}' focuses on: {section_desc}",
             "",
             "Requirements:",
-            f"- The question MUST test {section} concepts, NOT program reading/comprehension",
+            f"- The question MUST test {section} concepts",
+            "- Be ORIGINAL and DIFFERENT from the reference examples (different topic/scenario)",
             "- Be clear and test practical programming skills",
             "- Include specific input/output examples if applicable",
             "- Specify any constraints or requirements",
-            "- Format it similar to the examples below",
-            f"- The question content must clearly demonstrate {section} knowledge"
+            "- Match the STYLE and FORMAT of examples, but use DIFFERENT content/topic",
+            f"- The question content must clearly demonstrate {section} knowledge",
+            f"- Match the difficulty level ({difficulty}) of the reference examples",
+            "- Be creative and avoid repeating topics from the examples"
         ]
         
-        # Add style examples - emphasize section-specific examples
+        # Add style examples - use diverse examples to encourage variation
         if style_examples:
-            # Filter to show section-specific examples first
-            section_specific = [ex for ex in style_examples if ex.get('section') == section]
-            other_examples = [ex for ex in style_examples if ex.get('section') != section]
+            # Normalize section names for matching (handle variations like "1D Array" vs "1D Arrays")
+            normalized_section = self._normalize_section_name(section)
+            section_specific = []
+            related_examples = []
+            other_examples = []
             
-            if section_specific:
-                user_prompt_parts.append(f"\nExample questions from '{section}' section (match this style and topic):")
-                for i, example in enumerate(section_specific[:3], 1):
+            for ex in style_examples:
+                ex_section = ex.get('section', '')
+                ex_normalized = self._normalize_section_name(ex_section)
+                if ex_normalized == normalized_section:
+                    section_specific.append(ex)
+                elif self._are_sections_related(normalized_section, ex_normalized):
+                    related_examples.append(ex)
+                else:
+                    other_examples.append(ex)
+            
+            # Use diverse examples: 1-2 from section, 1-2 from related, 1 from other
+            examples_to_show = []
+            examples_to_show.extend(section_specific[:2])  # Up to 2 from exact section
+            examples_to_show.extend(related_examples[:1])   # 1 from related section
+            examples_to_show.extend(other_examples[:1])      # 1 from different section for contrast
+            
+            if examples_to_show:
+                user_prompt_parts.append(f"\nReference examples (use these for STYLE only, create a DIFFERENT question):")
+                for i, example in enumerate(examples_to_show[:4], 1):
                     user_prompt_parts.append(f"\nExample {i} (Section: {example.get('section', 'N/A')}):")
-                    user_prompt_parts.append(f"Marks: {example.get('marks', 'N/A')}")
                     example_text = example.get('text', 'N/A')
-                    if len(example_text) > 400:
-                        example_text = example_text[:400] + "..."
+                    if len(example_text) > 300:
+                        example_text = example_text[:300] + "..."
                     user_prompt_parts.append(f"Text: {example_text}")
-                    user_prompt_parts.append(f"  ^ This is a '{section}' question - your question should be similar!")
-            
-            # Also show one example from a different section to contrast
-            if other_examples and len(section_specific) < 2:
-                user_prompt_parts.append(f"\nExample from different section (for contrast - DO NOT follow this style):")
-                example = other_examples[0]
-                user_prompt_parts.append(f"Section: {example.get('section', 'N/A')} (NOT '{section}')")
-                user_prompt_parts.append(f"Text: {example.get('text', 'N/A')[:200]}...")
-                user_prompt_parts.append(f"  ^ This is NOT a '{section}' question - do NOT create this type!")
+                
+                user_prompt_parts.append(f"\nIMPORTANT: Your question must be:")
+                user_prompt_parts.append(f"- In the '{section}' section")
+                user_prompt_parts.append(f"- DIFFERENT from the examples above (different topic, different approach)")
+                user_prompt_parts.append(f"- Similar in STYLE and FORMAT only, not content")
         
-        user_prompt_parts.append("\nGenerate the question in this format:")
-        user_prompt_parts.append("Section: [section name]")
-        user_prompt_parts.append("Marks: [number]")
-        user_prompt_parts.append("Text: [question text]")
+        user_prompt_parts.append("\nGenerate the question text only (do not include marks or section labels):")
         
         user_prompt = "\n".join(user_prompt_parts)
         
@@ -161,8 +203,8 @@ Your questions should:
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}
                 ],
-                temperature=0.7,
-                max_tokens=500
+                temperature=0.9,  # Increased for more diversity
+                max_tokens=600  # Increased for longer, more detailed questions
             )
             
             # Parse response
@@ -186,7 +228,7 @@ Your questions should:
             return GeneratedQuestion(
                 question_number="",  # Will be assigned later
                 section=section,  # Use the section we specified, not what LLM might have said
-                marks=marks,
+                marks=0,
                 text=question_text.strip(),
                 answer_choices=None
             )

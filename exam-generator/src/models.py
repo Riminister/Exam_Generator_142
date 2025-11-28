@@ -55,7 +55,7 @@ class GeneratedQuestion(BaseModel):
     """Model for a generated question (before validation)."""
     question_number: str
     section: str
-    marks: int
+    marks: int = 0
     text: str
     answer_choices: Optional[List[str]] = None
     explanation: Optional[str] = None
